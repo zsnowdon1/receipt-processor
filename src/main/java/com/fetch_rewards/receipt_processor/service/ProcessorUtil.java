@@ -37,7 +37,8 @@ public class ProcessorUtil {
 
     // 5 points for every two items on the receipt.
     public static int getTwoItemPoints(List<Item> items) {
-        return 0;
+        int sizeMult = items.size() / 2;
+        return sizeMult * 5;
     }
 
     // If the trimmed length of the item description is a multiple of 3, multiply the price by 0.2 and round up to the nearest integer. The result is the number of points earned.
