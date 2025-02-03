@@ -9,5 +9,5 @@ import lombok.*;
 @Setter
 public class Item {
     private String shortDescription;
-    private long price;
+    private double price;
 }

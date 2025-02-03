@@ -2,7 +2,6 @@ package com.fetch_rewards.receipt_processor.entity;
 
 import lombok.*;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +13,7 @@ import java.util.List;
 public class Receipt {
     private String retailer;
     private Date purchaseDate;
-    private Time purchaseTime;
+    private String purchaseTime;
     private List<Item> items;
-    private long total;
+    private double total;
 }
