@@ -26,14 +26,7 @@ public class ReceiptProcessorService {
     10 points if the time of purchase is after 2:00pm and before 4:00pm.
      */
     public String postReceipt(Receipt receipt) {
-        int points = 0;
-        points += ProcessorUtil.getAlphanumericPoints(receipt.getRetailer());
-        points += ProcessorUtil.getRoundDollarPoints(receipt.getTotal());
-        points += ProcessorUtil.getQuarterMultiplePoints(receipt.getTotal());
-        points += ProcessorUtil.getTwoItemPoints(receipt.getItems());
-        points += ProcessorUtil.getCrazyPoints(receipt.getItems());
-        points += ProcessorUtil.getDatePoints(receipt.getPurchaseDate());
-        points += ProcessorUtil.getTimePoints(receipt.getPurchaseTime());
+        int points = ProcessorUtil.getReceiptPoints(receipt);
         String uuid = UUID.randomUUID().toString();
         pointMaps.put(uuid, points);
         return uuid.toString();
