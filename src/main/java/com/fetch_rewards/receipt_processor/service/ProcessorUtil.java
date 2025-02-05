@@ -71,7 +71,7 @@ public class ProcessorUtil {
             Item item = items.get(i);
             int trimmedLength = item.getShortDescription().trim().length();
             if(trimmedLength % 3 == 0) {
-                points += (int) Math.round(item.getPrice() * .2);
+                points += (int) Math.ceil(item.getPrice() * .2);
             }
         }
         System.out.println("getCrazyPoints: " + points);

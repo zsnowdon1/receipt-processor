@@ -77,7 +77,7 @@ public class ProcessorUtilTest {
         Item item5 = new Item("123456789", .75);
         items.add(item5);
         assertEquals(31, ProcessorUtil.getCrazyPoints(items));
-        Item item6 = new Item("123456789", 2.5);
+        Item item6 = new Item("123456789", 12.25);
         items.add(item6);
         assertEquals(32, ProcessorUtil.getCrazyPoints(items));
     }
