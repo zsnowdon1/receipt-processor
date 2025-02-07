@@ -24,7 +24,7 @@ public class ProcessorUtil {
 
 
     // One point for every alphanumeric character in the retailer name.
-    static int getAlphanumericPoints(String retailer) {
+    private static int getAlphanumericPoints(String retailer) {
         int points = 0;
         for(int i = 0; i < retailer.length(); i++) {
             if(Character.isLetterOrDigit(retailer.charAt(i))) {
@@ -36,7 +36,7 @@ public class ProcessorUtil {
     }
 
     // 50 points if the total is a round dollar amount with no cents.
-    static int getRoundDollarPoints(double total) {
+    private static int getRoundDollarPoints(double total) {
         if(total % 1 == 0) {
             System.out.println("getRoundDollarPoints: 50");
             return 50;
@@ -46,7 +46,7 @@ public class ProcessorUtil {
     }
 
     // 25 points if the total is a multiple of 0.25.
-    static int getQuarterMultiplePoints(double total) {
+    private static int getQuarterMultiplePoints(double total) {
         if(total % .25 == 0) {
             System.out.println("getQuarterMultiplePoints: 25");
             return 25;
@@ -56,7 +56,7 @@ public class ProcessorUtil {
     }
 
     // 5 points for every two items on the receipt.
-    static int getTwoItemPoints(List<Item> items) {
+    private static int getTwoItemPoints(List<Item> items) {
         int sizeMult = items.size() / 2;
         System.out.println("getTwoItemPoints: " + sizeMult * 5);
         return sizeMult * 5;
@@ -65,7 +65,7 @@ public class ProcessorUtil {
     // If the trimmed length of the item description is a multiple of 3,
     // multiply the price by 0.2 and round up to the nearest integer.
     // The result is the number of points earned.
-    static int getCrazyPoints(List<Item> items) {
+    private static int getCrazyPoints(List<Item> items) {
         int points = 0;
         for(int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
@@ -79,13 +79,13 @@ public class ProcessorUtil {
     }
 
     // 6 points if the day in the purchase date is odd.
-    static int getDatePoints(LocalDate date) {
+    private static int getDatePoints(LocalDate date) {
         int points = date.getDayOfMonth() % 2 != 0 ? 6 : 0;
         System.out.println("getDatePoints: " + points);
         return points;
     }
 
-    static int getTimePoints(LocalTime time) {
+    private static int getTimePoints(LocalTime time) {
         // Could be 13, 59 if you want 4:00 to count
         LocalTime start = LocalTime.of(14, 0);
         LocalTime end = LocalTime.of(16, 0);

@@ -20,22 +20,22 @@ public class ReceiptProcessorController {
     }
 
     @PostMapping("/process")
-    public ResponseEntity<PostReceiptResponse> postReceipt(@RequestBody Receipt receipt) {
+    public ResponseEntity<?> postReceipt(@RequestBody Receipt receipt) {
         try {
             String id = receiptService.postReceipt(receipt);
             return new ResponseEntity<>(new PostReceiptResponse(id), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("The receipt is invalid.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/{id}/points")
-    public ResponseEntity<GetPointsResponse> getPoints(@PathVariable String id) {
+    public ResponseEntity<?> getPoints(@PathVariable String id) {
         try {
             int points = receiptService.getPoints(id);
             return new ResponseEntity<>(new GetPointsResponse(points), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("No receipt found for that ID.", HttpStatus.NOT_FOUND);
         }
     }
 
