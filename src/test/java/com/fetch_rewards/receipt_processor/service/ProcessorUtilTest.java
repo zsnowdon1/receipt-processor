@@ -18,8 +18,12 @@ public class ProcessorUtilTest {
         objectMapper.registerModule(new JavaTimeModule());
         Receipt morningReceipt = objectMapper.readValue(new File("src/test/resources/morning-receipt.json"), Receipt.class);
         Receipt simpleReceipt = objectMapper.readValue(new File("src/test/resources/simple-receipt.json"), Receipt.class);
+        Receipt receipt109 = objectMapper.readValue(new File("src/test/resources/109-receipt.json"), Receipt.class);
+        Receipt receipt28 = objectMapper.readValue(new File("src/test/resources/28-receipt.json"), Receipt.class);
         assertEquals(15, ProcessorUtil.getReceiptPoints(morningReceipt));
         assertEquals(31, ProcessorUtil.getReceiptPoints(simpleReceipt));
+        assertEquals(109, ProcessorUtil.getReceiptPoints(receipt109));
+        assertEquals(28, ProcessorUtil.getReceiptPoints(receipt28));
     }
 
 }
