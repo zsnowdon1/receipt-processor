@@ -6,3 +6,8 @@ Commands to build and run image:
 
 You can now send requests to the application at:
 - http://localhost:8080
+
+
+
+Run api and util class tests with:
+- mvn test
