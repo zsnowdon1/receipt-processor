@@ -3,6 +3,7 @@ package com.fetch_rewards.receipt_processor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fetch_rewards.receipt_processor.controller.ReceiptProcessorController;
+import com.fetch_rewards.receipt_processor.entity.GetPointsResponse;
 import com.fetch_rewards.receipt_processor.entity.PostReceiptResponse;
 import com.fetch_rewards.receipt_processor.entity.Receipt;
 import com.fetch_rewards.receipt_processor.service.ProcessorUtil;
@@ -17,7 +18,7 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -29,8 +30,6 @@ class ReceiptProcessorApplicationTests {
 	private MockMvc mockMvc;
 	@Autowired
 	private ReceiptProcessorController receiptProcessorController;
-	public Receipt morningReceipt;
-	public Receipt simpleReceipt;
 
 	@Test
 	public void testGetEndpoint() throws Exception {
@@ -47,59 +46,51 @@ class ReceiptProcessorApplicationTests {
 
 		assertThat(receiptProcessorController).isNotNull();
 
-		String morningReceiptJson = objectMapper.writeValueAsString(morningReceipt);
-		String simpleReceiptJson = objectMapper.writeValueAsString(simpleReceipt);
-		String receipt109Json = objectMapper.writeValueAsString(receipt109);
-		String receipt28Json = objectMapper.writeValueAsString(receipt28);
+		PostReceiptResponse morningPostResponse = this.postReceipt(morningReceipt);
+		PostReceiptResponse simplePostResponse = this.postReceipt(simpleReceipt);
+		PostReceiptResponse receipt109PostResponse = this.postReceipt(receipt109);
+		PostReceiptResponse receipt28PostResponse = this.postReceipt(receipt28);
+
+
+		GetPointsResponse morningGetResponse = this.getPoints(morningPostResponse.getId());
+		GetPointsResponse simpleGetResponse = this.getPoints(simplePostResponse.getId());
+		GetPointsResponse receipt109GetResponse = this.getPoints(receipt109PostResponse.getId());
+		GetPointsResponse receipt28GetResponse = this.getPoints(receipt28PostResponse.getId());
+
+		assertEquals(15, morningGetResponse.getPoints());
+		assertEquals(31, simpleGetResponse.getPoints());
+		assertEquals(109, receipt109GetResponse.getPoints());
+		assertEquals(28, receipt28GetResponse.getPoints());
+
+
+	}
+
+	private PostReceiptResponse postReceipt(Receipt receipt) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		String receiptJson = objectMapper.writeValueAsString(receipt);
 
 		String responseBody = mockMvc.perform(post("/receipts/process")
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(morningReceiptJson))
+						.content(receiptJson))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.id").exists())
 				.andReturn()
 				.getResponse()
 				.getContentAsString();
-		PostReceiptResponse morningPostResponse = objectMapper.readValue(responseBody, PostReceiptResponse.class);
 
-		responseBody = mockMvc.perform(post("/receipts/process")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(simpleReceiptJson))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id").exists())
-				.andReturn()
-				.getResponse()
-				.getContentAsString();
-		PostReceiptResponse simplePostResponse = objectMapper.readValue(responseBody, PostReceiptResponse.class);
+		return objectMapper.readValue(responseBody, PostReceiptResponse.class);
+	}
 
-		responseBody = mockMvc.perform(post("/receipts/process")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(receipt109Json))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id").exists())
+	private GetPointsResponse getPoints(String receiptId) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+		String responseBody = mockMvc.perform(get("/receipts/{id}/points", receiptId))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andReturn()
 				.getResponse()
 				.getContentAsString();
-		PostReceiptResponse receipt109PostResponse = objectMapper.readValue(responseBody, PostReceiptResponse.class);
-
-		responseBody = mockMvc.perform(post("/receipts/process")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(receipt28Json))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id").exists())
-				.andReturn()
-				.getResponse()
-				.getContentAsString();
-		PostReceiptResponse receipt28PostResponse = objectMapper.readValue(responseBody, PostReceiptResponse.class);
-
-		responseBody = mockMvc.perform(post("/receipts/process")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(receipt28Json))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id").exists())
-				.andReturn()
-				.getResponse()
-				.getContentAsString();
+		return objectMapper.readValue(responseBody, GetPointsResponse.class);
 	}
 
 }
